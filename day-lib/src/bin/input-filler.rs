@@ -39,16 +39,14 @@ fn get_session() -> Result<String, ErrorKind>
     dir.push(".env");
     let env_string = std::fs::read_to_string(dir).unwrap();
 
-    if env_string.contains("SESSION") {
-        // TODO: split up lines and only parse SESSION Line
-        let (first, _second) = session_parser(&env_string).unwrap();
-        // println!("{}", format!("first: {first}, second: {second}"));
-        return Ok(first.to_string());
+    for line in env_string.lines() {
+        if line.contains("SESSION=") {
+            let (first, _second) = session_parser(&line).unwrap();
+            // println!("{}", format!("first: {first}, second: {second}"));
+            return Ok(first.to_string());
+        }
     }
-    else {
-        // TODO: throw error instead of text...
-        Ok(String::from("ERROR"))
-    }
+    Ok(String::from("ERROR"))
 }
 
 
