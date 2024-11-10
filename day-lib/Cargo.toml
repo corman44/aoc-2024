@@ -1,0 +1,13 @@
+[package]
+name = "day-libs"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reqwest = { workspace = true }
+tokio = { workspace = true }
+nom = { workspace = true }
+clap = { workspace = true }
+
+[dev-dependencies]
+divan = { workspace = true }
