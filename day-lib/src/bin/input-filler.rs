@@ -1,13 +1,10 @@
-use nom::character::complete::digit0;
-use nom::error::{ErrorKind, ParseError};
+use clap::{error::ErrorKind, CommandFactory, Parser};
 use reqwest::{self, blocking::Client, header::COOKIE};
-use clap::{CommandFactory, Parser};
 use nom::{
     bytes::complete::tag, character::complete,
     sequence::preceded, IResult,
 };
-use std::fmt::{format, Error};
-use std::path::PathBuf;
+use std::{fs::File, io::Write, path::PathBuf};
 
 #[derive(Parser, Debug)]
 #[clap(version)]
@@ -21,7 +18,7 @@ struct Args {
     /// so that we're always in the root without
     /// doing any shenanigans
     #[clap(long)]
-    current_working_directory: PathBuf,
+    cwd: PathBuf,
 }
 
 fn parse_day(input: &str) -> IResult<&str, u32> {
@@ -53,9 +50,20 @@ fn get_session() -> Result<String, ErrorKind>
 
 fn main() -> Result<(), reqwest::Error> {
     if let Ok(session) = get_session() {
-        println!("{}", format!("Session = {session}"));
-        // let args = Args::parse();
-        let url = "https://adventofcode.com/2020/day/1/input";
+        let args = Args::parse();
+        let Ok((_, day)) = parse_day(&args.day) else {
+            let mut cmd = Args::command();
+            cmd.error(
+                ErrorKind::ValueValidation,
+                format!(
+                    "day '{}' must be formatted as 'day-01'",
+                    args.day
+                ),
+            )
+            .exit()
+        };
+
+        let url = format!("https://adventofcode.com/2020/day/{day}/input");
         let client = Client::new();
         let input_data = client
             .get(url)
@@ -63,7 +71,19 @@ fn main() -> Result<(), reqwest::Error> {
             .send()?
             .text()?;
 
-        println!("Text: \n{:?}", input_data);
+        for filename in ["input1.txt", "input2.txt"] {
+            println!("{:?}", args.cwd);
+            let file_path = args
+                .cwd
+                .join(&args.day)
+                .join(filename);
+            println!("{}", format!("filepath: {file_path:?}"));
+            let mut file = File::create(&file_path)
+                .expect("should be able to create a file");
+            file.write_all(input_data.as_bytes())
+                .expect("should be able to write to input file");
+            println!("wrote {}", file_path.display())
+        }
     }
     Ok(())
 }

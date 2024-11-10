@@ -17,7 +17,12 @@ flamegraph day part:
     cargo flamegraph --profile flamegraph --root --package {{day}} --bin {{part}} -o flamegraphs/{{day}}--{{part}}.svg
 dhat day part:
     cargo run --profile dhat --features dhat-heap --package {{day}} --bin {{part}}
-create day:
-    cargo generate --path ./template --name {{day}}
 run day part:
     cargo run --package {{day}} --bin {{part}}
+# creates day directory and fills inputs
+create day:
+    cargo generate --path ./template --name {{day}}
+    just get-input {{day}}
+# fill text inputs from AOC
+get-input day:
+    cargo run --package day-libs --bin input-filler -- --day {{day}} --cwd "{{justfile_directory()}}"
