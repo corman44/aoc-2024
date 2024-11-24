@@ -30,20 +30,22 @@ fn session_parser(input: &str) -> IResult<&str, &str>
     tag("SESSION=")(input)
 }
 
-fn get_session() -> Result<String, ErrorKind>
+fn get_session() -> Result<String, String>
 {
     let mut dir = std::env::current_dir().unwrap();
     dir.push(".env");
-    let env_string = std::fs::read_to_string(dir).unwrap();
+    let env_string = std::fs::read_to_string(dir).expect("unable to find .env file");
 
     for line in env_string.lines() {
         if line.contains("SESSION=") {
             let (first, _second) = session_parser(&line).unwrap();
-            // println!("{}", format!("first: {first}, second: {second}"));
             return Ok(first.to_string());
         }
+        else {
+            return Err("SESSION key not found..".to_string())
+        }
     }
-    Ok(String::from("ERROR"))
+    Err("shouldn't reach here..".to_owned())
 }
 
 
@@ -72,17 +74,17 @@ fn main() -> Result<(), reqwest::Error> {
             .text()?;
 
         for filename in ["input1.txt", "input2.txt"] {
-            println!("{:?}", args.cwd);
+            // println!("{:?}", args.cwd);
             let file_path = args
                 .cwd
                 .join(&args.day)
                 .join(filename);
-            println!("{}", format!("filepath: {file_path:?}"));
+            // println!("{}", format!("filepath: {file_path:?}"));
             let mut file = File::create(&file_path)
                 .expect("should be able to create a file");
             file.write_all(input_data.as_bytes())
                 .expect("should be able to write to input file");
-            println!("wrote {}", file_path.display())
+            // println!("wrote {}", file_path.display())
         }
     }
     Ok(())
