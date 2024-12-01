@@ -7,8 +7,14 @@ default-members = ["day-*"]
 glam = "0.29"
 nom = "7.1"
 itertools = "0.13"
-tracing = "0.1"
-divan = "0.1.15"
+tracing = "0.1.41"
+divan = "0.1.16"
 reqwest = {version = "0.12", features = ["blocking"]}
 tokio = {version = "1.41.0", features = ["full"]}
 clap = { version =  "4.5.21", features = ["derive"]}
+
+[profile.bench]
+inherits = "release"
+panic = "abort"
+codegen-units = 1
+lto = true

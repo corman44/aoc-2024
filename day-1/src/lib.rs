@@ -1,4 +1,4 @@
-use nom::{branch::alt, character::complete::{digit0, multispace0}, combinator::map_res, sequence::{delimited, separated_pair}, IResult};
+use nom::{character::complete::{digit0, multispace0}, combinator::map_res, sequence::separated_pair, IResult};
 
 pub mod part1;
 pub mod part2;

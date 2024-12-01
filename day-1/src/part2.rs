@@ -1,4 +1,3 @@
-use itertools::Itertools;
 
 use crate::ws_parser;
 
@@ -14,20 +13,20 @@ pub fn process(
         })
         .collect();
 
-    let (mut v1, mut v2) = nums.iter()
+    let (v1, v2) = nums.iter()
     .map(|n| {
         (n.0,n.1)
     })
     .collect::<(Vec<u32>, Vec<u32>)>();
 
-    let sum_val:u32 = v1.iter()
+    let sum_val = v1.iter()
         .map(|v| {
             v2.iter()
                 .filter(|x| *x == v)
                 .count() as u32
                 * v
         })
-        .sum();
+        .sum::<u32>();
 
     Ok(sum_val.to_string())
 }

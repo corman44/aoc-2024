@@ -10,7 +10,7 @@ lint day:
 test day part:
     cargo nextest run -p {{day}} {{part}}
 bench-all:
-    cargo bench -q > benchmarks.txt
+    cargo bench -q >> benchmarks.txt
 bench day part:
     cargo bench --bench {{day}}-bench {{part}} >> {{day}}.bench.txt
 flamegraph day part:
