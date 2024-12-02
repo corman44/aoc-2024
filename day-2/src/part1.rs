@@ -56,3 +56,6 @@ mod tests {
         Ok(())
     }
 }
+
+/* Answer: 680
+ */
