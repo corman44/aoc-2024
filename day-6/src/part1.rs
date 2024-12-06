@@ -1,64 +1,93 @@
 use std::collections::{HashMap, HashSet};
 
+use crate::{simple_parse, Direction, Tile};
+
 #[tracing::instrument]
 pub fn process(
     input: &str,
 ) -> Result<String, String> {
     let data = simple_parse(&input);
     let mut direction = Direction::North;
-    let path: HashSet<(usize, usize)> = HashSet::new();
+    let mut path: HashSet<(i32, i32)> = HashSet::new();
 
     // get starting location
-    let start_v: Vec<(&usize, &usize)> = data.iter()
+    let start_v: Vec<(i32, i32)> = data.iter()
         .filter(|(_, t)| *t == &Tile::Guard)
-        .map(|((x,y), _)| (x,y))
-        .collect();
-    let guard_pos = start_v.first().expect("no Guard Position found");
-    println!("Guard Start Pos: {guard_pos:?}");
+        .map(|((x,y), _)| (*x,*y))
+        .collect();    
+    let mut guard_pos = *start_v.first().expect("no Guard Position found");
+    path.insert(guard_pos);
 
-    let mut cont = true;
-    // while cont {
+    let max_x: i32 = (input.lines().last().unwrap().chars().count() - 1).try_into().unwrap();
+    let max_y: i32 = (input.lines().count() - 1).try_into().unwrap();
+    // println!("Max x: {max_x}\nMax y: {max_y}");
 
-    // }
-
-    Ok(0.to_string())
-}
-
-#[derive(Debug, Default, PartialEq, Eq)]
-enum Tile {
-    #[default]
-    Empty,
-    Guard,
-    Object,
-}
-
-enum Direction {
-    North,
-    East,
-    South,
-    West,
-}
-
-fn simple_parse(input: &str) -> HashMap<(usize, usize), Tile> {
-    let mut x = 0;
-    let mut y = 0;
-    // let mut result: HashMap<(usize, usize), Tile> = HashMap::new();
-    input.lines()
-        .enumerate()
-        .flat_map(|(y,line)| {
-            line.chars()
-                .enumerate()
-                .map(move |(x,c)| {
-                    if c == '.' {
-                        ((x,y), Tile::Empty)
-                    } else if c == '^' {
-                        ((x,y), Tile::Guard)
+    let mut keep_walking = true;
+    while keep_walking {
+        // move in direction, check
+        match direction {
+            Direction::North => {
+                // check out of bounds or turning
+                if guard_pos.1 <= 0 {
+                    keep_walking = false;
+                } else { // move
+                    guard_pos.1 -= 1;
+                    // check if turn or not
+                    if *data.get(&guard_pos).expect("No Position Found") == Tile::Object {
+                        direction.turn();
+                        guard_pos.1 += 1;
                     } else {
-                        ((x,y), Tile::Object)
+                        path.insert(guard_pos);
                     }
-                })
-        })
-        .collect::<HashMap<(usize, usize), Tile>>()
+                }
+            },
+            Direction::East =>
+                // check out of bounds or turning
+                if guard_pos.0 >= max_x {
+                    keep_walking = false;
+                } else { // move
+                    guard_pos.0 += 1;
+                    // check if turn or not
+                    if *data.get(&guard_pos).expect("No Position Found") == Tile::Object {
+                        direction.turn();
+                        guard_pos.0 -= 1;
+                    } else {
+                        path.insert(guard_pos);
+                    }
+                },
+            Direction::South => {                // check out of bounds or turning
+                if guard_pos.1 >= max_y {
+                    keep_walking = false;
+                } else { // move
+                    guard_pos.1 += 1;
+                    // check if turn or not
+                    if *data.get(&guard_pos).expect(&format!("No Position Found: {:?}",guard_pos)) == Tile::Object {
+                        direction.turn();
+                        guard_pos.1 -= 1;
+                    } else {
+                        path.insert(guard_pos);
+                    }
+                }},
+            Direction::West =>                 // check out of bounds or turning
+            if guard_pos.0 <= 0 {
+                keep_walking = false;
+            } else { // move
+                guard_pos.0 -= 1;
+                // check if turn or not
+                println!("guard_pos: {guard_pos:?}");
+                if *data.get(&guard_pos).expect("No Position Found") == Tile::Object {
+                    direction.turn();
+                    guard_pos.0 += 1;
+                } else {
+                    path.insert(guard_pos);
+                }
+            },
+        }
+        // println!("CurrPos: {guard_pos:?}");
+        // println!("Direction: {direction:?}");
+    }
+    // println!("{path:?}");
+    Ok(path.len().to_string())
 }
 
 #[cfg(test)]
@@ -67,7 +96,8 @@ mod tests {
 
     #[test]
     fn test_process() {
-        let input = "....#.....
+        let input = 
+"....#.....
 .........#
 ..........
 ..#.......
@@ -81,4 +111,17 @@ mod tests {
         // println!("{data:?}");
         assert_eq!("41", process(input).unwrap());
     }
+
+    #[test]
+    fn test_turn() {
+        let mut dir = Direction::North;
+        dir.turn();
+        assert_eq!(Direction::East, dir);
+        dir.turn();
+        assert_eq!(Direction::South, dir);
+        dir.turn();
+        assert_eq!(Direction::West, dir);
+    }
 }
+
+// 4768

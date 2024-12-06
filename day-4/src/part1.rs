@@ -35,7 +35,7 @@ enum Direction {
 }
 
 fn check_recursive(puzzle: Vec<Vec<char>>, keys: &Vec<char>, x: usize, y: usize) -> usize {
-
+    todo!()
 }
 
 fn check_all_dir(puzzle: Vec<Vec<char>>, key: &char, x: usize, y: usize) -> Result<Vec<Direction>, ()> {

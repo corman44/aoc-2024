@@ -8,6 +8,7 @@ itertools = { workspace = true }
 nom = { workspace = true }
 tracing = { workspace = true }
 glam = { workspace = true }
+uuid = "1.11.0"
 
 [dev-dependencies]
 divan = { workspace = true }
