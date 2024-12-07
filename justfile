@@ -19,6 +19,8 @@ dhat day part:
     cargo run --profile dhat --features dhat-heap --package {{day}} --bin {{part}}
 run day part:
     cargo run --package {{day}} --bin {{part}}
+run-relase day part:
+    cargo run --package {{day}} --bin {{part}} --release
 # creates day directory and fills inputs
 create day:
     cargo generate --path ./template --name {{day}}
