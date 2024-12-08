@@ -8,10 +8,10 @@ glam = "0.29"
 nom = "7.1"
 itertools = "0.13"
 tracing = "0.1.41"
-divan = "0.1.16"
+divan = "0.1.17"
 reqwest = {version = "0.12", features = ["blocking"]}
-tokio = {version = "1.41.0", features = ["full"]}
-clap = { version =  "4.5.21", features = ["derive"]}
+tokio = {version = "1.42.0", features = ["full"]}
+clap = { version =  "4.5.23", features = ["derive"]}
 
 [profile.bench]
 inherits = "release"
