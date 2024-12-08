@@ -1,0 +1,3 @@
+day_6_bench (Win11) fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ part2     1.656 s       │ 1.712 s       │ 1.664 s       │ 1.666 s       │ 100     │ 100
+

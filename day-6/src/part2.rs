@@ -95,7 +95,7 @@ pub fn process(
         keep_walking = true;
         direction = Direction::North;
 
-        println!("{}", format!("try {count} / {}", path.clone().iter().count()));
+        // println!("{}", format!("try {count} / {}", path.clone().iter().count()));
 
         while keep_walking {
             // move in direction, check
