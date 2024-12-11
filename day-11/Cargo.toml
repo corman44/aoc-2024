@@ -1,0 +1,19 @@
+[package]
+name = "day-11"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+itertools = { workspace = true }
+nom = { workspace = true }
+rayon = "1.10.0"
+tracing = { workspace = true }
+
+[dev-dependencies]
+divan = { workspace = true }
+
+[[bench]]
+name = "day-11-bench"
+path = "bench/benchmark.rs"
+harness = false
+

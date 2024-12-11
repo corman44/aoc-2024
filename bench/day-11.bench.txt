@@ -1,0 +1,4 @@
+day_11_bench  fastest       │ slowest       │ median        │ mean          │ samples │ iters
+╰─ part1      2.926 ms      │ 3.859 ms      │ 3.027 ms      │ 3.077 ms      │ 100     │ 100
+╰─ part2      213.5 µs      │ 255.7 µs      │ 225.5 µs      │ 227.3 µs      │ 100     │ 100
+
