@@ -1,5 +1,5 @@
 [package]
-name = "{{project-name}}"
+name = "day-14"
 version = "0.1.0"
 edition = "2021"
 
@@ -13,7 +13,7 @@ glam = { workspace = true }
 divan = { workspace = true }
 
 [[bench]]
-name = "{{project-name}}-bench"
+name = "day-14-bench"
 path = "bench/benchmark.rs"
 harness = false
 
