@@ -4,6 +4,7 @@ pub fn process(
     _input: &str,
 ) -> Result<String, String> {
     todo!(" - part1");
+    Ok(0.to_string())
 }
 
 #[cfg(test)]
