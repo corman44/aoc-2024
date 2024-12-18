@@ -1,4 +1,4 @@
-use nom::{bytes::complete::tag, character::complete, combinator::value, multi::many0, sequence::{preceded, separated_pair, tuple}, IResult, Parser};
+use nom::{bytes::complete::tag, character::complete, multi::many0, sequence::{preceded, separated_pair, terminated}, IResult, Parser};
 use num_enum::TryFromPrimitive;
 
 
@@ -6,13 +6,17 @@ use num_enum::TryFromPrimitive;
 pub fn process(
     input: &str,
 ) -> Result<String, String> {
+    dbg!("Running Test...");
     let (mut registers, programs) = parse(input);
     let mut ip = 0;
     let mut out_buf = String::new();
 
-    dbg!(&registers);
-    dbg!(&programs);
+    // dbg!(&registers);
+    // dbg!(&programs);
 
+    println!("{:?}",registers);
+    println!("{:?}",programs);
+    
     while ip < programs.len() {
         let mut skip_ip_increase = false;
         let (instr, operand) = &programs[ip];
@@ -28,7 +32,7 @@ pub fn process(
                 }
             },
             Instruction::bxc => registers.b |= registers.c,
-            Instruction::out => out_buf.push_str(&format!("{},",operand_to_value(&registers, *operand))),
+            Instruction::out => out_buf.push_str(&format!("{},",operand_to_value(&registers, *operand) % 8)),
             Instruction::bdv => registers.b = registers.a / operand_to_value(&registers, *operand)^2,
             Instruction::cdv => registers.c = registers.a / operand_to_value(&registers, *operand)^2,
         }
@@ -54,12 +58,12 @@ fn parse(input: &str) -> (Registers, Vec<(Instruction,u8)>) {
     let (left, b) = parse_b(left.trim()).expect("unable to parse_b");
     let (left, c) = parse_c(left.trim()).expect("unable to parse_c");
     let reg = Registers {
-        a: a,
-        b: b,
-        c: c,
+        a,
+        b,
+        c,
     };
 
-    let (left, program) = parse_program(left.trim()).expect("unable to parse program");
+    let (_left, program) = parse_program(left.trim()).expect("unable to parse program");
     (reg, program)
 }
 
@@ -89,16 +93,19 @@ fn parse_program(input: &str) -> IResult<&str, Vec<(Instruction,u8)>> {
     preceded(
         tag("Program: "),
         many0(
-            separated_pair(
-                complete::u8,
-                tag(","),
-                complete::u8
-            ).map(|(instr, op)| {
-                (
-                    Instruction::try_from(instr).expect("Instruction conversion failed.."),
-                    op
-                )
-            })
+            terminated(
+                separated_pair(
+                    complete::u8,
+                    tag(","),
+                    complete::u8
+                ).map(|(instr, op)| {
+                    (
+                        Instruction::try_from(instr).expect("Instruction conversion failed.."),
+                        op
+                    )
+                }),
+                tag(",")
+            )
         )
     )(input)
 }
@@ -137,11 +144,12 @@ mod tests {
     
     #[test]
     fn test_process() {
-        let input = "Register A: 729
+        let input = 
+"Register A: 729
 Register B: 0
 Register C: 0
 
-Program: 0,1,5,4,3,0";
-        assert_eq!("4,6,3,5,6,3,5,2,1,0", process(input).unwrap());
+Program: 0,1,5,4,3,0,";
+        assert_eq!("4,6,3,5,6,3,5,2,1,0,", process(input).unwrap());
     }
 }
