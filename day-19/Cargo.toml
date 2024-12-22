@@ -1,0 +1,19 @@
+[package]
+name = "day-19"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+itertools = { workspace = true }
+nom = { workspace = true }
+tracing = { workspace = true }
+glam = { workspace = true }
+
+[dev-dependencies]
+divan = { workspace = true }
+
+[[bench]]
+name = "day-19-bench"
+path = "bench/benchmark.rs"
+harness = false
+
