@@ -1,9 +1,20 @@
 
+
 #[tracing::instrument]
 pub fn process(
-    _input: &str,
+    input: &str,
 ) -> Result<String, String> {
+    let data = parse(input);
     Ok(0.to_string())
+}
+
+pub struct Buttons {
+    pub a: IVec2,
+    pub b: IVec2,
+}
+
+fn parse(input: &str) -> Vec<IVec2, Buttons> {
+    vec![]
 }
 
 #[cfg(test)]
@@ -27,6 +38,6 @@ Prize: X=7870, Y=6450
 Button A: X+69, Y+23
 Button B: X+27, Y+71
 Prize: X=18641, Y=10279";
-        assert_eq!("", process(input).unwrap());
+        assert_eq!("480", process(input).unwrap());
     }
 }
