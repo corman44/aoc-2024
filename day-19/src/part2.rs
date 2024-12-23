@@ -1,9 +1,14 @@
+use crate::parse;
+
 
 #[tracing::instrument]
 pub fn process(
-    _input: &str,
+    input: &str,
 ) -> Result<String, String> {
-    todo!(" - part2");
+    let (available, requested) = parse(input).expect("unable to parse.");
+
+    
+
     Ok(0.to_string())
 }
 
@@ -13,8 +18,17 @@ mod tests {
 
     #[test]
     fn test_process() {
-        todo!("haven't built test yet");
-        let input = "";
-        assert_eq!("", process(input).unwrap());
+        let input = "r, wr, b, g, bwu, rb, gb, br
+
+brwrr
+bggr
+gbbr
+rrbgbr
+ubwu
+bwurrg
+brgr
+bbrgwb
+";
+        assert_eq!("16", process(input).unwrap());
     }
 }
